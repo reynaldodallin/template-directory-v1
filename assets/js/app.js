@@ -235,7 +235,23 @@ function initListingsPage() {
     document.querySelectorAll('[data-filter-rating]').forEach(rb => rb.checked = parseFloat(rb.value) === filters.minRating);
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
-    initFadeIn();
+
+    // Reveal cards: stagger with IntersectionObserver for scroll-based fade,
+    // plus a 150ms fallback so cards are always visible (crawlers, screenshots, etc.)
+    const newCards = grid.querySelectorAll('.fade-in');
+    if ('IntersectionObserver' in window) {
+      const cardObs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add('visible'), i * 40);
+            cardObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.02 });
+      newCards.forEach(el => cardObs.observe(el));
+    }
+    // Fallback: ensure all cards are visible after 150ms regardless
+    setTimeout(() => newCards.forEach(el => el.classList.add('visible')), 150);
   }
 
   window.changePage = p => { const f = getFilters(); f.page = p; setFilters(f); };
