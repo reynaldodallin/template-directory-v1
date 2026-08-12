@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="{{CONFIG_LANG}}" data-theme="{{CONFIG_DEFAULT_THEME}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description" content="{{PAGE_DESC}}">
+  <link rel="canonical" href="{{CANONICAL}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header" role="banner">
+  <div class="header__inner">
+    <a href="index.html" class="nav__logo" aria-label="Home">
+      <span class="nav__logo-icon" aria-hidden="true">{{CONFIG_LOGO_ICON}}</span>
+      <div>
+        <span>{{CONFIG_CITY}}</span>
+        <span class="nav__logo-tagline">{{CONFIG_CITY_TAGLINE}}</span>
+      </div>
+    </a>
+    <nav class="nav__links" id="navLinks" role="navigation">
+      <button class="nav__close" id="navClose" aria-label="Close menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      {{BLOCK_NAV_LINKS}}
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__theme-btn" id="themeToggle" aria-label="Toggle theme"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+      {{BLOCK_NAV_ACTIONS}}
+      <button class="nav__hamburger" id="navHamburger" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="nav__overlay" id="navOverlay"></div>
+
+<!-- ── Premium Hero ── -->
+<div class="premium-hero">
+  <div class="premium-hero__bg" style="background-image:url('{{LISTING_PHOTO_URL}}')"></div>
+  <div class="premium-hero__overlay"></div>
+  <div class="container">
+    <div class="premium-hero__content">
+      <span class="premium-hero__label">⭐ Premium Listing</span>
+      <h1>{{LISTING_NAME}}</h1>
+      <div class="card-rating" style="margin:.75rem 0;">
+        {{LISTING_STARS_HTML}}
+        <span class="rating-number" style="color:#fff;">{{LISTING_RATING}}</span>
+        <span class="review-count" style="color:rgba(255,255,255,.7);">({{LISTING_REVIEWS}})</span>
+      </div>
+      <p style="color:rgba(255,255,255,.8);max-width:540px;">This is a premium listing example. Your business could be featured here, reaching thousands of visitors with maximum visibility.</p>
+      <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+        <a href="get-site.html" class="btn btn-gold btn-lg">Get Your Premium Listing</a>
+        <a href="contact.html" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4);">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Premium Features ── -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Why Go Premium</span>
+      <h2>Maximum Visibility</h2>
+      <p>Premium listings get priority placement, a featured badge, and 3× more views than standard listings.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1.25rem;">
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:1.75rem;margin-bottom:.625rem;">🏆</div>
+        <h3 style="font-size:.9375rem;margin-bottom:.375rem;">Top of Search Results</h3>
+        <p style="font-size:.8125rem;">Your listing appears first in category and search results.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:1.75rem;margin-bottom:.625rem;">⭐</div>
+        <h3 style="font-size:.9375rem;margin-bottom:.375rem;">Premium Badge</h3>
+        <p style="font-size:.8125rem;">Gold "Premium" badge builds instant trust with customers.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:1.75rem;margin-bottom:.625rem;">📷</div>
+        <h3 style="font-size:.9375rem;margin-bottom:.375rem;">Photo Gallery</h3>
+        <p style="font-size:.8125rem;">Showcase up to 20 photos to attract more customers.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:1.75rem;margin-bottom:.625rem;">📊</div>
+        <h3 style="font-size:.9375rem;margin-bottom:.375rem;">Analytics</h3>
+        <p style="font-size:.8125rem;">See how many people viewed, called, or got directions to your business.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:1.75rem;margin-bottom:.625rem;">🔗</div>
+        <h3 style="font-size:.9375rem;margin-bottom:.375rem;">Website Link</h3>
+        <p style="font-size:.8125rem;">Link directly to your website for instant bookings and orders.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Pricing ── -->
+<section class="section" id="main">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Simple Pricing</span>
+      <h2>Pick Your Plan</h2>
+    </div>
+    <div class="pricing-grid">
+      {{BLOCK_PRICING}}
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="cta-banner fade-in">
+      <h2>Ready to Stand Out?</h2>
+      <p>Get your business featured and start reaching more customers today.</p>
+      <div class="btn-group">
+        <a href="contact.html" class="btn btn-gold btn-lg">Get Premium Listing</a>
+        <a href="get-site.html" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4);">See All Plans</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">{{CONFIG_LOGO_ICON}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}</div>
+        <p class="footer__tagline">{{CONFIG_FOOTER_TAGLINE}}</p>
+      </div>
+      <div class="footer__col">
+        <h4>Categories</h4>
+        <ul>{{BLOCK_FOOTER_CAT_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>Areas</h4>
+        <ul>{{BLOCK_FOOTER_AREA_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>For Owners</h4>
+        <ul>
+          <li><a href="contact.html">Free Listing</a></li>
+          <li><a href="premium-listing.html">Premium Listing</a></li>
+          <li><a href="get-site.html">Get a Website</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© {{CONFIG_FOOTER_YEAR}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}</span>
+      <a href="{{CONFIG_FOOTER_POWERED_URL}}" target="_blank" rel="noopener">{{CONFIG_FOOTER_POWERED_LABEL}}</a>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop" aria-label="Back to top"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg></button>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

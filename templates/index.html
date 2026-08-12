@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="{{CONFIG_LANG}}" data-theme="{{CONFIG_DEFAULT_THEME}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description" content="{{PAGE_DESC}}">
+  <link rel="canonical" href="{{CANONICAL}}">
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{PAGE_TITLE}}">
+  <meta property="og:description" content="{{PAGE_DESC}}">
+  <meta property="og:url" content="{{PAGE_OG_URL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{CONFIG_HERO_PHOTO_URL}}">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}",
+    "url": "{{CANONICAL}}",
+    "description": "{{PAGE_DESC}}"
+  }
+  </script>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header" role="banner">
+  <div class="header__inner">
+    <a href="index.html" class="nav__logo" aria-label="{{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}} — Home">
+      <span class="nav__logo-icon" aria-hidden="true">{{CONFIG_LOGO_ICON}}</span>
+      <div>
+        <span>{{CONFIG_CITY}}</span>
+        <span class="nav__logo-tagline">{{CONFIG_CITY_TAGLINE}}</span>
+      </div>
+    </a>
+    <nav class="nav__links" id="navLinks" role="navigation" aria-label="Main navigation">
+      <button class="nav__close" id="navClose" aria-label="Close menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      {{BLOCK_NAV_LINKS}}
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__theme-btn" id="themeToggle" aria-label="Toggle dark/light mode">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      {{BLOCK_NAV_ACTIONS}}
+      <button class="nav__hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="nav__overlay" id="navOverlay" role="presentation"></div>
+
+<!-- ── Hero ── -->
+<section class="hero" aria-label="Hero">
+  <div class="hero__bg" style="background-image:url('{{CONFIG_HERO_PHOTO_URL}}')" role="img" aria-label="{{CONFIG_CITY}} coffee scene"></div>
+  <div class="hero__overlay"></div>
+  <div class="container">
+    <div class="hero__content">
+      <div class="hero__badge fade-in">{{CONFIG_HERO_BADGE}}</div>
+      <h1 class="hero__title fade-in">
+        {{CONFIG_HERO_TITLE}}<br>
+        <span class="hero__title-accent">{{CONFIG_HERO_TITLE_ACCENT}}</span>
+      </h1>
+      <p class="hero__subtitle fade-in">{{CONFIG_HERO_SUBTITLE}}</p>
+      <form class="hero__search fade-in" id="heroSearchForm" role="search" aria-label="Search coffee shops">
+        <label for="heroSearchInput" class="sr-only">Search</label>
+        <input id="heroSearchInput" type="search" placeholder="{{CONFIG_HERO_SEARCH_PH}}" autocomplete="off" aria-label="{{CONFIG_HERO_SEARCH_PH}}">
+        <button type="submit" class="btn btn-primary">{{CONFIG_HERO_SEARCH_BTN}}</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats Bar ── -->
+<div class="stats-bar" aria-label="Directory statistics">
+  <div class="container">
+    {{BLOCK_STATS}}
+  </div>
+</div>
+
+<!-- ── Categories ── -->
+<section class="section section--alt" aria-labelledby="cats-heading">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">{{CONFIG_SECTION_CATS_LABEL}}</span>
+      <h2 id="cats-heading">{{CONFIG_SECTION_CATS_TITLE}}</h2>
+      <p>{{CONFIG_SECTION_CATS_SUBTITLE}}</p>
+    </div>
+    <div class="categories-grid">
+      {{BLOCK_CATEGORIES}}
+    </div>
+  </div>
+</section>
+
+<!-- ── Top Rated ── -->
+<section class="section" aria-labelledby="top-rated-heading">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">{{CONFIG_SECTION_TOP_RATED_LABEL}}</span>
+      <h2 id="top-rated-heading">{{CONFIG_SECTION_TOP_RATED_TITLE}}</h2>
+      <p>{{CONFIG_SECTION_TOP_RATED_SUBTITLE}}</p>
+    </div>
+    <div class="cards-grid">
+      {{BLOCK_TOP_RATED}}
+    </div>
+    <div class="text-center mt-3">
+      <a href="listings.html" class="btn btn-outline btn-lg">{{CONFIG_SECTION_VIEW_ALL_BTN}}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ad Slot ── -->
+<div class="container">
+  <div class="ad-slot" aria-label="Advertisement">Advertisement • 728×90</div>
+</div>
+
+<!-- ── Recently Added ── -->
+<section class="section section--alt" aria-labelledby="recent-heading">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">{{CONFIG_SECTION_RECENT_LABEL}}</span>
+      <h2 id="recent-heading">{{CONFIG_SECTION_RECENT_TITLE}}</h2>
+      <p>{{CONFIG_SECTION_RECENT_SUBTITLE}}</p>
+    </div>
+    <div class="cards-grid cards-grid--4">
+      {{BLOCK_RECENTLY_ADDED}}
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Owner ── -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner fade-in">
+      <h2>{{CONFIG_SECTION_CTA_TITLE}}</h2>
+      <p>{{CONFIG_SECTION_CTA_DESC}}</p>
+      <div class="btn-group">
+        <a href="{{CONFIG_CTA_PRIMARY_HREF}}" class="btn btn-gold btn-lg">{{CONFIG_CTA_PRIMARY_LABEL}}</a>
+        <a href="{{CONFIG_CTA_SEC_HREF}}" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,.4);">{{CONFIG_CTA_SEC_LABEL}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Blog Preview ── -->
+<section class="section section--alt" aria-labelledby="blog-heading">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">{{CONFIG_SECTION_BLOG_LABEL}}</span>
+      <h2 id="blog-heading">{{CONFIG_SECTION_BLOG_TITLE}}</h2>
+      <p>{{CONFIG_SECTION_BLOG_SUBTITLE}}</p>
+    </div>
+    <div class="cards-grid">
+      <article class="blog-card fade-in">
+        <div class="blog-card__img"><img src="https://images.pexels.com/photos/1305063/pexels-photo-1305063.jpeg?auto=compress&cs=tinysrgb&w=600&h=340&fit=crop" alt="Blog" loading="lazy" width="600" height="340"></div>
+        <div class="blog-card__body">
+          <div class="blog-card__date">August 2026</div>
+          <h3 class="blog-card__title">The Best Hidden Cafes You Haven't Tried Yet</h3>
+          <p class="blog-card__excerpt">Discover the city's best-kept secrets — from rooftop terraces to underground espresso bars that locals love.</p>
+        </div>
+      </article>
+      <article class="blog-card fade-in">
+        <div class="blog-card__img"><img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=600&h=340&fit=crop" alt="Blog" loading="lazy" width="600" height="340"></div>
+        <div class="blog-card__body">
+          <div class="blog-card__date">July 2026</div>
+          <h3 class="blog-card__title">Single Origin vs Blends: A Guide for Coffee Beginners</h3>
+          <p class="blog-card__excerpt">What's the difference, why does it matter, and which one should you order? Our experts break it down.</p>
+        </div>
+      </article>
+      <article class="blog-card fade-in">
+        <div class="blog-card__img"><img src="https://images.pexels.com/photos/585753/pexels-photo-585753.jpeg?auto=compress&cs=tinysrgb&w=600&h=340&fit=crop" alt="Blog" loading="lazy" width="600" height="340"></div>
+        <div class="blog-card__body">
+          <div class="blog-card__date">June 2026</div>
+          <h3 class="blog-card__title">From Seed to Cup: How Local Roasteries Source Their Beans</h3>
+          <p class="blog-card__excerpt">We went behind the scenes at three top roasteries to learn how they select the world's finest green coffee.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">{{CONFIG_LOGO_ICON}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}</div>
+        <p class="footer__tagline">{{CONFIG_FOOTER_TAGLINE}}</p>
+        <div class="footer__social">
+          <a href="{{CONFIG_FOOTER_IG}}" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="{{CONFIG_FOOTER_TW}}" aria-label="X (Twitter)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M4 20 20 4"/></svg></a>
+          <a href="{{CONFIG_FOOTER_FB}}" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Categories</h4>
+        <ul>{{BLOCK_FOOTER_CAT_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>Neighborhoods</h4>
+        <ul>{{BLOCK_FOOTER_AREA_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>For Businesses</h4>
+        <ul>
+          <li><a href="contact.html">Add Your Cafe</a></li>
+          <li><a href="premium-listing.html">Premium Listing</a></li>
+          <li><a href="get-site.html">Get a Website</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© {{CONFIG_FOOTER_YEAR}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}} — {{CONFIG_FULL_DOMAIN}}</span>
+      <a href="{{CONFIG_FOOTER_POWERED_URL}}" target="_blank" rel="noopener">{{CONFIG_FOOTER_POWERED_LABEL}}</a>
+    </div>
+  </div>
+</footer>
+
+<button id="scrollTop" aria-label="Back to top">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

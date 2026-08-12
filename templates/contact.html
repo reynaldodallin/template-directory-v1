@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="{{CONFIG_LANG}}" data-theme="{{CONFIG_DEFAULT_THEME}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description" content="{{PAGE_DESC}}">
+  <link rel="canonical" href="{{CANONICAL}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header" role="banner">
+  <div class="header__inner">
+    <a href="index.html" class="nav__logo" aria-label="Home">
+      <span class="nav__logo-icon" aria-hidden="true">{{CONFIG_LOGO_ICON}}</span>
+      <div>
+        <span>{{CONFIG_CITY}}</span>
+        <span class="nav__logo-tagline">{{CONFIG_CITY_TAGLINE}}</span>
+      </div>
+    </a>
+    <nav class="nav__links" id="navLinks" role="navigation" aria-label="Main navigation">
+      <button class="nav__close" id="navClose" aria-label="Close menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      {{BLOCK_NAV_LINKS}}
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__theme-btn" id="themeToggle" aria-label="Toggle theme"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+      {{BLOCK_NAV_ACTIONS}}
+      <button class="nav__hamburger" id="navHamburger" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="nav__overlay" id="navOverlay"></div>
+
+<!-- ── Page Header ── -->
+<div class="page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span aria-current="page">Add Your Business</span>
+    </nav>
+    <h1>Add Your Business</h1>
+    <p>Get your {{CONFIG_NICHE}} listed and reach thousands of visitors every month.</p>
+  </div>
+</div>
+
+<!-- ── Benefits ── -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">Why List With Us</span>
+      <h2>Reach More Customers</h2>
+      <p>Our directory is visited by thousands of {{CONFIG_NICHE}} enthusiasts every month.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1.5rem;">
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:2rem;margin-bottom:.75rem;">📍</div>
+        <h3 style="font-size:1rem;margin-bottom:.5rem;">Google Maps Integration</h3>
+        <p style="font-size:.875rem;">Your location pinned on our interactive map — visitors get directions in one click.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:2rem;margin-bottom:.75rem;">⭐</div>
+        <h3 style="font-size:1rem;margin-bottom:.5rem;">Ratings & Reviews</h3>
+        <p style="font-size:.875rem;">Showcase your ratings and build credibility with real customer feedback.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:2rem;margin-bottom:.75rem;">📊</div>
+        <h3 style="font-size:1rem;margin-bottom:.5rem;">Analytics Dashboard</h3>
+        <p style="font-size:.875rem;">Know how many people viewed your listing, clicked directions, or called you.</p>
+      </div>
+      <div class="listing-sidebar-card text-center fade-in">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🌐</div>
+        <h3 style="font-size:1rem;margin-bottom:.5rem;">Your Own Website</h3>
+        <p style="font-size:.875rem;">Upgrade to get a full professional website launched in 48 hours. <a href="get-site.html" style="color:var(--color-primary);">Learn more →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Form ── -->
+<section class="section" id="main">
+  <div class="container">
+    <div class="contact-layout">
+      <div>
+        <div class="section-header section-header--left fade-in">
+          <span class="section-label">Free Listing</span>
+          <h2>Submit Your Business</h2>
+          <p>Fill in your details and we'll add your listing within 24 hours — completely free.</p>
+        </div>
+
+        <form id="contactForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="bizName">Business Name *</label>
+            <input class="form-control" type="text" id="bizName" name="bizName" required placeholder="e.g. The Corner Cafe">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label class="form-label" for="ownerName">Your Name *</label>
+              <input class="form-control" type="text" id="ownerName" name="ownerName" required placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <input class="form-control" type="email" id="email" name="email" required placeholder="your@email.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">WhatsApp / Phone</label>
+            <input class="form-control" type="tel" id="phone" name="phone" placeholder="+1 555 000 0000">
+            <p class="form-note">We may send a WhatsApp confirmation to finalize your listing.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="address">Business Address *</label>
+            <input class="form-control" type="text" id="address" name="address" required placeholder="Full address including area">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label class="form-label" for="category">Category</label>
+              <select class="form-control" id="category" name="category">
+                {{BLOCK_FILTER_CATEGORIES_OPTIONS}}
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="website">Website (optional)</label>
+              <input class="form-control" type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="description">Brief Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Tell customers what makes your place special..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="interest">Are you interested in a full website?</label>
+            <select class="form-control" id="interest" name="interest">
+              <option value="">— Select —</option>
+              <option value="yes-asap">Yes, I want a website ASAP</option>
+              <option value="yes-later">Maybe later</option>
+              <option value="no">No, just the free listing</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="min-width:200px;">Submit Your Business</button>
+        </form>
+      </div>
+
+      <!-- Info Panel -->
+      <div>
+        <div class="listing-sidebar-card" style="position:sticky;top:80px;">
+          <h4 style="text-transform:none;letter-spacing:0;font-size:1.125rem;margin-bottom:1rem;">What Happens Next?</h4>
+          <ol style="list-style:decimal;padding-left:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+            <li style="font-size:.9rem;color:var(--color-text-muted);">
+              <strong style="color:var(--color-text);">We review your submission</strong> — usually within 24 hours.
+            </li>
+            <li style="font-size:.9rem;color:var(--color-text-muted);">
+              <strong style="color:var(--color-text);">Your listing goes live</strong> — visible to thousands of visitors.
+            </li>
+            <li style="font-size:.9rem;color:var(--color-text-muted);">
+              <strong style="color:var(--color-text);">We send you a confirmation</strong> via email with your listing link.
+            </li>
+            <li style="font-size:.9rem;color:var(--color-text-muted);">
+              <strong style="color:var(--color-text);">Optional: Upgrade</strong> to premium for more visibility and a full website.
+            </li>
+          </ol>
+
+          <div style="margin-top:2rem;padding:1.25rem;background:var(--color-bg-alt);border-radius:var(--radius-md);border:1px solid var(--color-border);">
+            <p style="font-size:.875rem;font-weight:600;color:var(--color-text);margin-bottom:.375rem;">Want a full website?</p>
+            <p style="font-size:.8125rem;color:var(--color-text-muted);margin-bottom:.875rem;">Launch a professional site in 48h from {{CONFIG_PRICING_TITLE}}.</p>
+            <a href="get-site.html" class="btn btn-gold btn-block btn-sm">See Pricing →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">{{CONFIG_LOGO_ICON}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}</div>
+        <p class="footer__tagline">{{CONFIG_FOOTER_TAGLINE}}</p>
+      </div>
+      <div class="footer__col">
+        <h4>Categories</h4>
+        <ul>{{BLOCK_FOOTER_CAT_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>Areas</h4>
+        <ul>{{BLOCK_FOOTER_AREA_LINKS}}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>For Owners</h4>
+        <ul>
+          <li><a href="contact.html">Free Listing</a></li>
+          <li><a href="premium-listing.html">Premium Listing</a></li>
+          <li><a href="get-site.html">Get a Website</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© {{CONFIG_FOOTER_YEAR}} {{CONFIG_CITY}} {{CONFIG_CITY_TAGLINE}}</span>
+      <a href="{{CONFIG_FOOTER_POWERED_URL}}" target="_blank" rel="noopener">{{CONFIG_FOOTER_POWERED_LABEL}}</a>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop" aria-label="Back to top"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg></button>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+// Build select options from config
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('category');
+  if (sel && typeof CAFES_DATA !== 'undefined') {
+    const cats = Object.values(CATEGORY_NAMES);
+    sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('') + '<option value="other">Other</option>';
+  }
+});
+</script>
+</body>
+</html>
