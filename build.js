@@ -128,11 +128,11 @@ function listingCardHTML(l, basePath) {
 </article>`;
 }
 
-// Pre-renders all cards with data-* attributes into the static listings grid.
-// JS will show/hide these elements — no innerHTML replacement needed.
+// Pre-renders first-page cards as static HTML fallback for no-JS / crawler view.
+// When JS loads, it replaces grid.innerHTML with the full interactive render.
 function blockListingsGrid() {
   const sorted = [...LISTINGS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews);
-  return sorted.map(l => listingCardHTML(l, '')).join('\n');
+  return sorted.slice(0, CFG.perPage).map(l => listingCardHTML(l, '')).join('\n');
 }
 
 function blockTopRated(basePath) {

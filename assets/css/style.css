@@ -268,8 +268,14 @@ p  { color: var(--color-text-muted); }
 [data-theme="dark"] .tag { background: var(--color-bg); }
 
 /* ── Fade in ──────────────────────────────────────────────────── */
-.fade-in { opacity: 0; transform: translateY(16px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
-.fade-in.visible { opacity: 1; transform: translateY(0); }
+/* Default: content is FULLY VISIBLE — no JS required.
+   .visible adds a subtle entrance animation as enhancement only. */
+@keyframes _fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { opacity: 1; transform: none; }
+.fade-in.visible { animation: _fadeInUp .45s ease both; }
 
 /* ── Categories ───────────────────────────────────────────────── */
 .categories-grid {
@@ -303,6 +309,9 @@ p  { color: var(--color-text-muted); }
 /* ── Listings Page Layout ─────────────────────────────────────── */
 .listings-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; align-items: start; }
 @media(max-width: 768px) { .listings-layout { grid-template-columns: 1fr; } }
+
+/* ── Filter Overlay — hidden outside mobile; must not be a grid item on desktop ── */
+.filter-overlay { display: none; }
 
 /* ── Filter Sidebar ───────────────────────────────────────────── */
 .filter-sidebar {

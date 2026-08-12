@@ -139,9 +139,6 @@ function sponsoredCardHTML() {
 }
 
 // ── Listings page ────────────────────────────────────────────────
-// Cards are pre-rendered as static HTML at build time (with data-* attributes).
-// JS show/hides them based on filters — no innerHTML replacement needed.
-// This means cards are always visible even before JS runs (crawlers, screenshots).
 function initListingsPage() {
   const grid        = document.getElementById('listingsGrid');
   const countEl     = document.getElementById('listingsCount');
@@ -149,9 +146,6 @@ function initListingsPage() {
   const sortSelect  = document.getElementById('sortSelect');
   const searchInput = document.getElementById('listingSearch');
   if (!grid) return;
-
-  // All static card elements (article[data-slug])
-  const allCards = () => [...grid.querySelectorAll('article[data-slug]')];
 
   function getFilters() {
     const hash   = window.location.hash.slice(1);
@@ -177,47 +171,51 @@ function initListingsPage() {
     window.location.hash = params.toString();
   }
 
+  function filterAndSort() {
+    const f  = getFilters();
+    let data = [...CAFES_DATA];
+    if (f.search) {
+      const q = f.search.toLowerCase();
+      data = data.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.area.toLowerCase().includes(q) ||
+        c.tags.some(t => t.toLowerCase().includes(q)) ||
+        c.address.toLowerCase().includes(q)
+      );
+    }
+    if (f.categories.length) {
+      data = data.filter(c => f.categories.includes(CATEGORY_MAP[c.category]));
+    }
+    if (f.areas.length) {
+      data = data.filter(c => f.areas.includes(c.area));
+    }
+    if (f.minRating) {
+      data = data.filter(c => c.rating >= f.minRating);
+    }
+    if (f.sort === 'reviews') data.sort((a,b) => b.reviews - a.reviews);
+    else if (f.sort === 'name') data.sort((a,b) => a.name.localeCompare(b.name));
+    else data.sort((a,b) => b.rating - a.rating || b.reviews - a.reviews);
+    return { data, page: f.page, filters: f };
+  }
+
   function render() {
-    const f     = getFilters();
-    let cards   = allCards();
+    const { data, page, filters } = filterAndSort();
+    const PER        = DIR_CONFIG.perPage;
+    const totalPages = Math.ceil(data.length / PER);
+    const start      = (page - 1) * PER;
+    const pageData   = data.slice(start, start + PER);
 
-    // Filter: show/hide cards using display style
-    const q = (f.search || '').toLowerCase();
-    cards.forEach(card => {
-      const slug     = card.dataset.slug || '';
-      const area     = card.dataset.area  || '';
-      const rating   = parseFloat(card.dataset.rating) || 0;
-      const name     = card.dataset.name  || '';
-      const tags     = card.dataset.tags  || '';
-
-      let show = true;
-      if (q && !name.includes(q) && !area.toLowerCase().includes(q) && !tags.includes(q)) show = false;
-      if (f.categories.length && !f.categories.includes(slug)) show = false;
-      if (f.areas.length && !f.areas.includes(area)) show = false;
-      if (f.minRating && rating < f.minRating) show = false;
-
-      card.style.display = show ? '' : 'none';
+    let html = '';
+    pageData.forEach((c, i) => {
+      if (i === DIR_CONFIG.sponsoredAt - 1 && page === 1) html += sponsoredCardHTML();
+      html += cafeCardHTML(c, '');
     });
+    if (!pageData.length) {
+      html = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-text-muted);">No ${DIR_CONFIG.niche || 'listings'} found matching your filters.</div>`;
+    }
+    grid.innerHTML = html;
+    if (countEl) countEl.textContent = `${data.length} listing${data.length !== 1 ? 's' : ''} found`;
 
-    // Sort visible cards by re-ordering in DOM
-    const visible = cards.filter(c => c.style.display !== 'none');
-    if (f.sort === 'reviews') visible.sort((a,b) => Number(b.dataset.reviews) - Number(a.dataset.reviews));
-    else if (f.sort === 'name') visible.sort((a,b) => (a.dataset.name||'').localeCompare(b.dataset.name||''));
-    else visible.sort((a,b) => (Number(b.dataset.rating)||0) - (Number(a.dataset.rating)||0) || Number(b.dataset.reviews) - Number(a.dataset.reviews));
-    visible.forEach(c => grid.appendChild(c));
-
-    // Count
-    const total = visible.length;
-    if (countEl) countEl.textContent = `${total} listing${total !== 1 ? 's' : ''} found`;
-
-    // Pagination (simple show first N, hide rest)
-    const PER = DIR_CONFIG.perPage;
-    const page = f.page;
-    const start = (page - 1) * PER;
-    visible.forEach((c, i) => {
-      c.style.display = (i >= start && i < start + PER) ? '' : 'none';
-    });
-    const totalPages = Math.ceil(total / PER);
     if (paginationEl) {
       if (totalPages > 1) {
         let ph = `<button class="pagination__btn" onclick="changePage(${page-1})" ${page===1?'disabled':''}>Previous</button>`;
@@ -230,11 +228,11 @@ function initListingsPage() {
       }
     }
 
-    if (sortSelect) sortSelect.value = f.sort;
-    if (searchInput) searchInput.value = f.search;
-    document.querySelectorAll('[data-filter-category]').forEach(cb => cb.checked = f.categories.includes(cb.value));
-    document.querySelectorAll('[data-filter-area]').forEach(cb => cb.checked = f.areas.includes(decodeURIComponent(cb.value)));
-    document.querySelectorAll('[data-filter-rating]').forEach(rb => rb.checked = parseFloat(rb.value) === f.minRating);
+    if (sortSelect) sortSelect.value = filters.sort;
+    if (searchInput) searchInput.value = filters.search;
+    document.querySelectorAll('[data-filter-category]').forEach(cb => cb.checked = filters.categories.includes(cb.value));
+    document.querySelectorAll('[data-filter-area]').forEach(cb => cb.checked = filters.areas.includes(decodeURIComponent(cb.value)));
+    document.querySelectorAll('[data-filter-rating]').forEach(rb => rb.checked = parseFloat(rb.value) === filters.minRating);
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
