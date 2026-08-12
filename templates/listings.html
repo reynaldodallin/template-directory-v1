@@ -108,9 +108,10 @@
           </select>
         </div>
 
-        <!-- Grid (populated by JS) -->
-        <div class="cards-grid" id="listingsGrid" aria-live="polite" aria-label="Listings">
-          <!-- JS renders listing cards here -->
+        <!-- Grid: pre-rendered at build time; JS filters by toggling display -->
+        <div class="cards-grid" id="listingsGrid" aria-live="polite" aria-label="Listings"
+             data-total="{{CONFIG_LISTINGS_TOTAL}}">
+          {{BLOCK_LISTINGS_GRID}}
         </div>
 
         <!-- Pagination (rendered by JS) -->

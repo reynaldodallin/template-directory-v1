@@ -102,7 +102,13 @@ function listingCardHTML(l, basePath) {
   basePath = basePath || '';
   const photoUrl = l.photoUrl || pexelsUrl(l.pexelsId, 400, 300);
   const slug     = catSlug(l);
-  return `<article class="listing-card fade-in">
+  return `<article class="listing-card fade-in visible"
+  data-slug="${slug}"
+  data-area="${(l.area || '').replace(/"/g, '&quot;')}"
+  data-rating="${l.rating}"
+  data-reviews="${l.reviews}"
+  data-name="${l.name.toLowerCase().replace(/"/g, '&quot;')}"
+  data-tags="${l.tags.join(',').toLowerCase()}">
   <a href="${basePath}listing/${l.slug}.html" class="card-link">
     <div class="card-image">
       <img src="${photoUrl}" alt="${l.name}" loading="lazy" width="400" height="300" onerror="this.src='${pexelsUrl('302899',400,300)}'">
@@ -120,6 +126,13 @@ function listingCardHTML(l, basePath) {
     </div>
   </a>
 </article>`;
+}
+
+// Pre-renders all cards with data-* attributes into the static listings grid.
+// JS will show/hide these elements — no innerHTML replacement needed.
+function blockListingsGrid() {
+  const sorted = [...LISTINGS].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews);
+  return sorted.map(l => listingCardHTML(l, '')).join('\n');
 }
 
 function blockTopRated(basePath) {
@@ -427,6 +440,9 @@ function generateListingsPage() {
     BLOCK_FILTER_CATEGORIES_OPTIONS: CFG.categories.map(c =>
       `<option value="${c.schemaKey}">${c.label}</option>`
     ).join('\n                '),
+    // Pre-rendered static grid — no JS required to show initial cards
+    BLOCK_LISTINGS_GRID: blockListingsGrid(),
+    CONFIG_LISTINGS_TOTAL: String(LISTINGS.length),
   };
   write('listings.html', applyTokens(tpl, tokens));
 }
