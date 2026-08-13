@@ -36,7 +36,7 @@ function toggleTheme() { setTheme(currentTheme === 'light' ? 'dark' : 'light'); 
 
 // ── Navigation ───────────────────────────────────────────────────
 function initNav() {
-  const hamburger = document.getElementById('navHamburger');
+  const hamburger = document.getElementById('navHamburger') || document.getElementById('hamburger');
   const links     = document.getElementById('navLinks');
   const overlay   = document.getElementById('navOverlay');
   const close     = document.getElementById('navClose');

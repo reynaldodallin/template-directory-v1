@@ -805,6 +805,9 @@ function generateContactPage() {
     PAGE_DESC:  `Add your ${CFG.niche.replace(/s$/,'')} to the ${CFG.city} ${CFG.cityTagline}. Premium listing options available.`,
     PAGE_OG_URL:`https://${CFG.subdomain}.${CFG.domain}/contact.html`,
     CANONICAL:  `https://${CFG.subdomain}.${CFG.domain}/contact.html`,
+    BLOCK_FILTER_CATEGORIES_OPTIONS: CFG.categories.map(c =>
+      `<option value="${c.schemaKey}">${c.label}</option>`
+    ).join('\n                '),
   };
   write('contact.html', applyTokens(tpl, tokens));
 }
