@@ -183,8 +183,11 @@
         <div class="premium-badge" style="margin-bottom:.875rem;">⭐ Premium Listing</div>
         <h4 style="text-transform:none;letter-spacing:0;font-size:1rem;margin-bottom:.5rem;">Own this business?</h4>
         <p style="font-size:.875rem;color:var(--color-text-muted);margin-bottom:1rem;">Claim your listing, add photos, update hours, and get analytics.</p>
-        <a href="../get-site.html" class="btn btn-primary btn-block">Claim & Upgrade</a>
+        <a href="../get-site.html" class="btn btn-primary btn-block btn-trial-trigger" data-biz-name="{{LISTING_NAME}}">Claim & Upgrade</a>
       </div>
+
+      <!-- Chatbot anchor — activated only for Premium listings -->
+      <div id="ai-chatbot-anchor" data-chatbot-enabled="{{HAS_CHATBOT_ENABLED}}" data-listing="{{LISTING_SLUG}}" hidden></div>
 
       <!-- Ad slot sidebar -->
       <div class="ad-slot" style="margin:0;" aria-label="Advertisement">Ad • 300×250</div>

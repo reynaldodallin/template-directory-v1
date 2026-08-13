@@ -10,6 +10,16 @@ const path = require('path');
 
 const CFG      = require('./config.js');
 const LISTINGS = require('./data/listings.js');
+const POSTS    = require('./data/blog-posts.js');
+const ADV      = require('./data/adv-products.js');
+
+// SaaS network — atalhos presentes em TODOS os directories da rede
+const SAAS_NETWORK = [
+  { label: 'TechSites — Sites com IA',     url: 'https://techsites.ai',        desc: 'Professional AI websites in 60 seconds' },
+  { label: 'WP TechSites — WordPress AI',  url: 'https://wp.techsites.ai',     desc: 'AI tools plugin for WordPress' },
+  { label: 'MediaGeek A.I. — 118 AI tools', url: 'https://ai.mediageek.io',    desc: 'Complete AI toolbox' },
+  { label: 'APEX Meetings — AI copilot',   url: 'https://apex.techsites.ai',   desc: 'AI that executes while you talk' },
+];
 
 const DIST = path.join(__dirname, 'dist');
 
@@ -26,8 +36,104 @@ function readTemplate(name) {
 function write(filePath, content) {
   const full = path.join(DIST, filePath);
   mkdirp(path.dirname(full));
+  // Inject SaaS network band into any page footer that doesn't have it yet
+  if (filePath.endsWith('.html') && content.includes('class="footer__bottom"') && !content.includes('saas-network')) {
+    const basePath = filePath.includes('/') ? '../' : '';
+    content = content.replace('<div class="footer__bottom">', saasNetworkBandHTML(basePath) + '\n    <div class="footer__bottom">');
+  }
   fs.writeFileSync(full, content, 'utf8');
   console.log('  ✓', filePath);
+}
+
+// ── Markdown → HTML (minimal, build-time only) ─────────────────
+
+function mdToHtml(md) {
+  const inline = s => s
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy">')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  const blocks = md.trim().split(/\n\s*\n/);
+  return blocks.map(block => {
+    const b = block.trim();
+    if (/^### /.test(b))  return `<h4>${inline(b.slice(4))}</h4>`;
+    if (/^## /.test(b))   return `<h3>${inline(b.slice(3))}</h3>`;
+    if (/^# /.test(b))    return `<h2>${inline(b.slice(2))}</h2>`;
+    if (/^> /.test(b))    return `<blockquote>${inline(b.replace(/^> /gm, ''))}</blockquote>`;
+    if (/^- /m.test(b) && b.split('\n').every(l => /^- /.test(l.trim())))
+      return `<ul>${b.split('\n').map(l => `<li>${inline(l.trim().slice(2))}</li>`).join('')}</ul>`;
+    if (/^\d+\. /m.test(b) && b.split('\n').every(l => /^\d+\. /.test(l.trim())))
+      return `<ol>${b.split('\n').map(l => `<li>${inline(l.trim().replace(/^\d+\. /, ''))}</li>`).join('')}</ol>`;
+    return `<p>${inline(b.replace(/\n/g, '<br>'))}</p>`;
+  }).join('\n');
+}
+
+function readingTime(md) {
+  return Math.max(1, Math.round(md.split(/\s+/).length / 220));
+}
+
+function formatDateHuman(iso) {
+  return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+// ── ADV / Affiliate blocks ──────────────────────────────────────
+
+function advImageUrl(p, w, h) {
+  return p.imageUrl || pexelsUrl(p.pexelsId, w || 400, h || 300);
+}
+
+function blockAdvCards(limit) {
+  return ADV.slice(0, limit || 3).map(p => `
+    <a href="${p.url}" target="_blank" rel="noopener sponsored" class="adv-card">
+      ${p.badge ? `<span class="adv-card__badge">${p.badge}</span>` : ''}
+      <div class="adv-card__img"><img src="${advImageUrl(p, 400, 260)}" alt="${p.name}" loading="lazy" width="400" height="260"></div>
+      <div class="adv-card__body">
+        <h4 class="adv-card__name">${p.name}</h4>
+        <p class="adv-card__blurb">${p.blurb}</p>
+        <div class="adv-card__row">
+          <span class="adv-card__price">$${p.price}</span>
+          <span class="adv-card__cta">View Deal →</span>
+        </div>
+      </div>
+    </a>`).join('\n');
+}
+
+function comparisonTableHTML(products) {
+  const rows = products.map((row, i) => {
+    const p = ADV.find(a => a.id === row.advId);
+    if (!p) return '';
+    return `<tr>
+      <td class="cmp-rank">#${i + 1}</td>
+      <td><div class="cmp-product"><img src="${advImageUrl(p, 120, 90)}" alt="${p.name}" loading="lazy" width="60" height="45"><div><strong>${p.name}</strong><span class="cmp-highlight">${row.highlight}</span></div></div></td>
+      <td class="cmp-score">${row.score}</td>
+      <td class="cmp-pros">${row.pros}</td>
+      <td class="cmp-cons">${row.cons}</td>
+      <td><a href="${p.url}" target="_blank" rel="noopener sponsored" class="btn btn-gold btn-sm">$${p.price} →</a></td>
+    </tr>`;
+  }).join('\n');
+  return `<div class="cmp-wrap"><table class="cmp-table">
+    <thead><tr><th>#</th><th>Product</th><th>Score</th><th>Pros</th><th>Cons</th><th>Price</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+// ── SaaS network band (injected into every footer) ─────────────
+
+function saasNetworkBandHTML(basePath) {
+  const links = SAAS_NETWORK.map(s =>
+    `<a href="${s.url}" target="_blank" rel="noopener" class="saas-network__link"><strong>${s.label}</strong><span>${s.desc}</span></a>`
+  ).join('\n        ');
+  return `<div class="saas-network" aria-label="Our SaaS Network">
+      <div class="saas-network__head">
+        <span class="saas-network__title">⚡ This directory is powered by our AI SaaS network</span>
+        <span class="saas-network__sub">Chatbots, hosting, scraping, marketing & PWA — the same products offered here run this very site.</span>
+      </div>
+      <div class="saas-network__links">
+        ${links}
+      </div>
+    </div>`;
 }
 
 function pexelsUrl(id, w, h) {
@@ -102,7 +208,8 @@ function listingCardHTML(l, basePath) {
   basePath = basePath || '';
   const photoUrl = l.photoUrl || pexelsUrl(l.pexelsId, 400, 300);
   const slug     = catSlug(l);
-  return `<article class="listing-card fade-in visible"
+  const premium = !!l.featured;
+  return `<article class="listing-card fade-in visible${premium ? ' listing-card--premium' : ''}"
   data-slug="${slug}"
   data-area="${(l.area || '').replace(/"/g, '&quot;')}"
   data-rating="${l.rating}"
@@ -112,7 +219,7 @@ function listingCardHTML(l, basePath) {
   <a href="${basePath}listing/${l.slug}.html" class="card-link">
     <div class="card-image">
       <img src="${photoUrl}" alt="${l.name}" loading="lazy" width="400" height="300" onerror="this.src='${pexelsUrl('302899',400,300)}'">
-      <span class="card-category-badge">${l.category}</span>
+      <span class="card-category-badge">${l.category}</span>${premium ? '\n      <span class="card-premium-badge">★ Premium</span>' : ''}
     </div>
     <div class="card-body">
       <h3 class="card-title">${l.name}</h3>
@@ -287,6 +394,7 @@ function baseTokens(basePath) {
     BLOCK_FOOTER_CAT_LINKS:     blockFooterCategoryLinks(basePath),
     BLOCK_FOOTER_AREA_LINKS:    blockFooterAreaLinks(basePath),
     BLOCK_PRICING:              blockPricingCards(),
+    BLOCK_BLOG_CARDS_HOME:      [...POSTS].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3).map(p => blogCardHTML(p, basePath)).join('\n'),
   };
 }
 
@@ -411,6 +519,177 @@ const DIR_CONFIG = {
 `;
 }
 
+// ── Blog blocks & generators ────────────────────────────────────
+
+function postUrl(p, basePath) { return `${basePath || ''}blog/${p.slug}.html`; }
+
+function blogCardHTML(p, basePath) {
+  basePath = basePath || '';
+  return `<article class="blog-card fade-in visible">
+    <a href="${postUrl(p, basePath)}" class="card-link">
+      <div class="blog-card__img"><img src="${pexelsUrl(p.pexelsId, 600, 340)}" alt="${p.title}" loading="lazy" width="600" height="340"></div>
+      <div class="blog-card__body">
+        <div class="blog-card__date">${p.category} · ${formatDateHuman(p.date)}</div>
+        <h3 class="blog-card__title">${p.title}</h3>
+        <p class="blog-card__excerpt">${p.excerpt}</p>
+        <span class="blog-card__more">Read article → <em>${readingTime(p.markdown)} min</em></span>
+      </div>
+    </a>
+  </article>`;
+}
+
+function blockFooterHTML(basePath) {
+  basePath = basePath || '';
+  return `<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">${CFG.logoIcon} ${CFG.city} ${CFG.cityTagline}</div>
+        <p class="footer__tagline">${CFG.footer.tagline}</p>
+      </div>
+      <div class="footer__col">
+        <h4>Categories</h4>
+        <ul>${blockFooterCategoryLinks(basePath)}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>Blog</h4>
+        <ul>${POSTS.slice(0, 4).map(p => `<li><a href="${postUrl(p, basePath)}">${p.category}: ${p.title.length > 42 ? p.title.slice(0, 42) + '…' : p.title}</a></li>`).join('\n            ')}</ul>
+      </div>
+      <div class="footer__col">
+        <h4>For Businesses</h4>
+        <ul>
+          <li><a href="${basePath}contact.html">Add Your Business</a></li>
+          <li><a href="${basePath}premium-listing.html">Premium Listing</a></li>
+          <li><a href="${basePath}get-site.html">Get a Website</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© ${CFG.footer.copyrightYear} ${CFG.city} ${CFG.cityTagline} — ${CFG.subdomain}.${CFG.domain}</span>
+      <a href="${CFG.footer.poweredBy.href}" target="_blank" rel="noopener">${CFG.footer.poweredBy.label}</a>
+    </div>
+  </div>
+</footer>`;
+}
+
+function relatedListingsBlockHTML(slugs, basePath) {
+  const items = (slugs || []).map(s => LISTINGS.find(l => l.slug === s)).filter(Boolean);
+  if (!items.length) return '';
+  return `<div class="post-related">
+    <h3>Featured in this article</h3>
+    <div class="cards-grid cards-grid--compact">
+      ${items.map(l => listingCardHTML(l, basePath)).join('\n')}
+    </div>
+  </div>`;
+}
+
+function generateBlogIndex() {
+  const tpl = readTemplate('blog');
+  const sorted = [...POSTS].sort((a, b) => b.date.localeCompare(a.date));
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'Blog',
+    name: `${CFG.city} ${CFG.cityTagline} Blog`,
+    url: `https://${CFG.subdomain}.${CFG.domain}/blog.html`,
+    blogPost: sorted.map(p => ({
+      '@type': 'BlogPosting', headline: p.title, datePublished: p.date,
+      url: `https://${CFG.subdomain}.${CFG.domain}/blog/${p.slug}.html`,
+    })),
+  };
+  const tokens = {
+    ...baseTokens(''),
+    PAGE_TITLE: `Blog — ${CFG.city} ${CFG.cityTagline}: Guides, Reviews & Comparisons`,
+    PAGE_DESC:  `Reviews, buying guides and local stories from the ${CFG.city} ${CFG.niche} scene.`,
+    PAGE_OG_URL:`https://${CFG.subdomain}.${CFG.domain}/blog.html`,
+    CANONICAL:  `https://${CFG.subdomain}.${CFG.domain}/blog.html`,
+    JSONLD_BLOG: JSON.stringify(jsonld),
+    BLOG_PAGE_TITLE:    CFG.sections.blogTitle,
+    BLOG_PAGE_SUBTITLE: CFG.sections.blogSubtitle,
+    BLOCK_BLOG_CARDS:   sorted.map(p => blogCardHTML(p, '')).join('\n'),
+    CONFIG_ADV_TITLE:   'Recommended Gear',
+    BLOCK_ADV_CARDS:    blockAdvCards(3),
+    BLOCK_FOOTER:       blockFooterHTML(''),
+  };
+  write('blog.html', applyTokens(tpl, tokens));
+}
+
+function generateBlogPosts() {
+  const tpl = readTemplate('post-template');
+  POSTS.forEach(p => {
+    const canonical = `https://${CFG.subdomain}.${CFG.domain}/blog/${p.slug}.html`;
+    const cover = pexelsUrl(p.pexelsId, 1200, 630);
+    const jsonld = {
+      '@context': 'https://schema.org', '@type': 'Article',
+      headline: p.title, description: p.excerpt, image: cover,
+      datePublished: p.date, dateModified: p.date,
+      author: { '@type': 'Organization', name: p.author },
+      publisher: { '@type': 'Organization', name: `${CFG.city} ${CFG.cityTagline}` },
+      mainEntityOfPage: canonical,
+    };
+    const jsonldBlocks = [JSON.stringify(jsonld)];
+    let comparison = '';
+    if (p.products && p.products.length) {
+      comparison = comparisonTableHTML(p.products);
+      jsonldBlocks.push(JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'ItemList',
+        name: p.title,
+        itemListElement: p.products.map((row, i) => {
+          const prod = ADV.find(a => a.id === row.advId) || {};
+          return { '@type': 'ListItem', position: i + 1, name: prod.name || row.advId, url: prod.url };
+        }),
+      }));
+    }
+    const others = POSTS.filter(o => o.slug !== p.slug).slice(0, 3);
+    const tokens = {
+      ...baseTokens('../'),
+      PAGE_TITLE:  `${p.title} — ${CFG.city} ${CFG.cityTagline}`,
+      PAGE_DESC:   p.excerpt.slice(0, 160),
+      PAGE_OG_URL: canonical,
+      PAGE_OG_IMG: cover,
+      CANONICAL:   canonical,
+      JSONLD_ARTICLE: jsonldBlocks.join('</script>\n  <script type="application/ld+json">'),
+      POST_TITLE:        p.title,
+      POST_CATEGORY:     p.category,
+      POST_AUTHOR:       p.author,
+      POST_DATE_ISO:     p.date,
+      POST_DATE_HUMAN:   formatDateHuman(p.date),
+      POST_READING_TIME: String(readingTime(p.markdown)),
+      POST_IMAGE_URL:    cover,
+      POST_MARKDOWN_CONTENT: mdToHtml(p.markdown),
+      BLOCK_COMPARISON:       comparison,
+      BLOCK_RELATED_LISTINGS: relatedListingsBlockHTML(p.relatedListings, '../'),
+      CONFIG_ADV_TITLE:  'Recommended Gear',
+      BLOCK_ADV_CARDS:   blockAdvCards(3),
+      BLOCK_MORE_POSTS:  others.map(o => blogCardHTML(o, '../')).join('\n'),
+      BLOCK_FOOTER:      blockFooterHTML('../'),
+    };
+    write(`blog/${p.slug}.html`, applyTokens(tpl, tokens));
+  });
+}
+
+// ── SEO: sitemap.xml + robots.txt ───────────────────────────────
+
+function generateSitemapAndRobots() {
+  const base = `https://${CFG.subdomain}.${CFG.domain}`;
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = [
+    { loc: `${base}/`, priority: '1.0' },
+    { loc: `${base}/listings.html`, priority: '0.9' },
+    { loc: `${base}/blog.html`, priority: '0.9' },
+    ...CFG.categories.map(c => ({ loc: `${base}/category/${c.slug}.html`, priority: '0.8' })),
+    ...POSTS.map(p => ({ loc: `${base}/blog/${p.slug}.html`, priority: '0.8', lastmod: p.date })),
+    ...LISTINGS.map(l => ({ loc: `${base}/listing/${l.slug}.html`, priority: '0.7' })),
+    { loc: `${base}/premium-listing.html`, priority: '0.6' },
+    { loc: `${base}/get-site.html`, priority: '0.6' },
+    { loc: `${base}/contact.html`, priority: '0.5' },
+  ];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod || today}</lastmod><priority>${u.priority}</priority></url>`).join('\n')}
+</urlset>`;
+  write('sitemap.xml', xml);
+  write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${base}/sitemap.xml\n`);
+}
+
 // ── Page Generators ─────────────────────────────────────────────
 
 function generateIndex() {
@@ -488,6 +767,7 @@ function generateListingPages() {
       LISTING_GMAPS_URL:    `https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lng}`,
       LISTING_WA_URL:       l.phone ? `https://wa.me/${l.phone.replace(/\D/g,'')}` : '#',
       LISTING_SCHEMA_TYPE:  CFG.schemaType,
+      HAS_CHATBOT_ENABLED:  l.featured ? 'true' : 'false',
       BLOCK_RELATED:        related,
     };
     write(`listing/${l.slug}.html`, applyTokens(tpl, tokens));
@@ -607,6 +887,9 @@ function build() {
   generateContactPage();
   generateGetSitePage();
   generatePremiumListing();
+  generateBlogIndex();
+  generateBlogPosts();
+  generateSitemapAndRobots();
 
   console.log('\n🎨 Static Assets:');
   copyStaticAssets();

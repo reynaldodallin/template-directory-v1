@@ -354,6 +354,49 @@ function initContactForm() {
   });
 }
 
+// ── Trial upsell banner ──────────────────────────────────────────
+// Buttons with .btn-trial-trigger + data-biz-name show a contextual
+// upsell modal instead of navigating. Closes on ESC, overlay click, or ✕.
+function initTrialUpsell() {
+  let modal = null;
+
+  function closeModal() {
+    if (modal) { modal.remove(); modal = null; }
+    document.removeEventListener('keydown', onKey);
+  }
+  function onKey(e) { if (e.key === 'Escape') closeModal(); }
+
+  function openModal(bizName, href) {
+    closeModal();
+    const base = getBasePath();
+    modal = document.createElement('div');
+    modal.className = 'upsell-overlay';
+    modal.innerHTML =
+      '<div class="upsell-modal" role="dialog" aria-modal="true" aria-labelledby="upsellTitle">' +
+        '<button class="upsell-close" aria-label="Close">&#10005;</button>' +
+        '<div class="upsell-icon">🚀</div>' +
+        '<h3 id="upsellTitle">' + bizName + ' has not activated its official site yet</h3>' +
+        '<p>This business is listed in demo mode. Activate the official website to unlock the AI chatbot, PWA app, bookings and priority placement in this directory.</p>' +
+        '<div class="upsell-actions">' +
+          '<a href="' + (href || base + 'get-site.html') + '" class="btn btn-primary btn-block">Activate Official Site</a>' +
+          '<a href="' + base + 'premium-listing.html" class="btn btn-outline btn-block">See Premium Benefits</a>' +
+        '</div>' +
+      '</div>';
+    modal.addEventListener('click', e => {
+      if (e.target === modal || e.target.closest('.upsell-close')) closeModal();
+    });
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(modal);
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.btn-trial-trigger');
+    if (!btn) return;
+    e.preventDefault();
+    openModal(btn.getAttribute('data-biz-name') || 'This business', btn.getAttribute('href'));
+  });
+}
+
 // ── Base path util ───────────────────────────────────────────────
 function getBasePath() {
   const p = window.location.pathname;
@@ -377,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap();
   initShare();
   initContactForm();
+  initTrialUpsell();
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
